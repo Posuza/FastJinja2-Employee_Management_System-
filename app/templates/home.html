@@ -1,0 +1,1235 @@
+{% extends "index.html" %}
+{% block title %}Employee Management{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <h1 class="text-2xl font-bold mb-6">Employee Management</h1>
+
+    <!-- ====================== -->
+    <!-- EMPTY STATE SECTION    -->
+    <!-- ====================== -->
+    {% if not employees and current_user %}
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-8 text-center">
+        <div class="mb-6">
+            <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-blue-100 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Employees Found</h3>
+            <p class="text-gray-600 mb-6">{{ "Get started by adding your first employee to the system." if
+                current_user.role in ["admin", "hr"] else "No employee records are available." }}</p>
+
+            {% if current_user and current_user.role in ["admin", "hr"] %}
+            <button id="emptyStateAddEmployee"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 flex items-center mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                Add First Employee
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+
+    <!-- ====================== -->
+    <!-- EMPLOYEE LIST SECTION  -->
+    <!-- ====================== -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b flex justify-between items-center">
+            <h5 class="font-semibold text-blue-800">Employee List ({{ employees|length }})</h5>
+            {% if current_user and current_user.role in ["admin", "hr"] %}
+            <button id="openAddEmployeeModal"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                Add New Employee
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Employee Data Table -->
+        <div class="relative overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <!-- Table Header -->
+                <thead class="bg-gray-50 sticky top-0 z-10">
+                    <tr>
+                        <!-- Left-most column (fixed) -->
+                        <th scope="col" class="sticky left-0 bg-gray-50 px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                            No.
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Code
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Name
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Phone
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Email
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            NRC
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Employment
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Salary
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Start Date
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Leave Date
+                        </th>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Address
+                        </th>
+                        <!-- Right-most column (fixed) -->
+                        {% if current_user and current_user.role in ["admin", "hr"] %}
+                        <th scope="col" class="sticky right-0 bg-gray-50 px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                            Actions
+                        </th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <!-- Table Body -->
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for employee in employees %}
+                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <!-- Row Number - LEFT MOST (fixed) -->
+                        <td class="sticky left-0 bg-white px-3 py-3 whitespace-nowrap text-sm text-gray-500 font-medium border-r">
+                            {{ loop.index }}
+                        </td>
+
+                        <!-- Employee Code -->
+                        <td class="px-3 py-3 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ employee.emp_code }}</div>
+                        </td>
+
+                        <!-- Employee Name -->
+                        <td class="px-3 py-3 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium text-gray-900">
+                                    {{ employee.prefix if employee.prefix else "" }} {{ employee.first_name }} {{ employee.last_name }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Phone -->
+                        <td class="px-3 py-3">
+                            <div class="text-xs text-gray-500">
+                                {% if employee.phone %}
+                                    {{ employee.phone }}
+                                {% else %}
+                                    <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Email -->
+                        <td class="px-3 py-3">
+                            <div class="text-xs text-gray-500">
+                                {% if employee.email %}
+                                    <div class="truncate max-w-[120px]" title="{{ employee.email }}">{{ employee.email }}</div>
+                                {% else %}
+                                    <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Thai ID -->
+                        <td class="px-3 py-3">
+                            <div class="text-xs text-gray-500">
+                                {% if employee.thai_id_or_passport %}
+                                <div class="truncate max-w-[80px]" title="{{ employee.thai_id_or_passport }}">
+                                    {{ employee.masked_id if employee.masked_id else employee.thai_id_or_passport }}
+                                </div>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Employment Type Cell -->
+                        <td class="px-3 py-3 whitespace-nowrap">
+                            {% if employee.employment %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium employment-badge employment-{{ employee.employment_normalized }}">
+                                {{ employee.employment }}
+                            </span>
+                            {% else %}
+                            <span class="text-gray-400 text-xs">-</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Status Cell -->
+                        <td class="px-3 py-3 whitespace-nowrap">
+                            {% if employee.status %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium status-badge status-{{ employee.status_normalized }}">
+                                {{ employee.status }}
+                            </span>
+                            {% else %}
+                            <span class="text-gray-400 text-xs">-</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Salary Cell -->
+                        <td class="px-3 py-3 whitespace-nowrap text-sm">
+                            {% if employee.salary %}
+                            <div class="text-xs font-medium">{{ employee.salary }}</div>
+                            {% else %}
+                            <span class="text-gray-400 text-xs">-</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Start Date Cell -->
+                        <td class="px-3 py-3 whitespace-nowrap text-xs text-gray-500">
+                            {% if employee.start_date %}
+                            <span class="font-medium">{{ employee.start_date[:10] }}</span>
+                            {% else %}
+                            <span class="text-gray-400">-</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Leave Date Cell -->
+                        <td class="px-3 py-3 whitespace-nowrap text-xs text-gray-500">
+                            {% if employee.leave_date %}
+                            <span class="font-medium text-red-600">{{ employee.leave_date[:10] }}</span>
+                            {% else %}
+                            <span class="text-gray-400">-</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Address -->
+                        <td class="px-3 py-3">
+                            <div class="text-xs text-gray-500 truncate max-w-[150px]" title="{{ employee.address }}">
+                                {% if employee.address %}
+                                {{ employee.address }}
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </div>
+                        </td>
+
+                        <!-- Actions Cell - RIGHT MOST (fixed) -->
+                        {% if current_user and current_user.role in ["admin", "hr"] %}
+                        <td class="sticky right-0 bg-white px-3 py-3 whitespace-nowrap text-sm font-medium text-right border-l">
+                            <div class="flex items-center justify-end space-x-2">
+                                <button type="button" class="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
+                                    onclick="openModal('editModal{{ employee.employee_id }}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                {% if current_user.role == "admin" %}
+                                <button type="button" class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                                    onclick="openModal('deleteModal{{ employee.employee_id }}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ====================== -->
+    <!-- USER MANAGEMENT SECTION (ADMIN ONLY) -->
+    <!-- ====================== -->
+    {% if current_user and current_user.role == "admin" %}
+    <div class="mt-8 bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 px-4 py-3 border-b flex justify-between items-center">
+            <h5 class="font-semibold text-indigo-800">User Management</h5>
+            <button id="openAddUserModal"
+                class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clip-rule="evenodd" />
+                </svg>
+                Add New User
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Username</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Created</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for user in users %}
+                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ user.username }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-500">{{ user.email }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if user.role == "admin" %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                Admin
+                            </span>
+                            {% elif user.role == "hr" %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                HR
+                            </span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                User
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ user.created_at[:10] }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-2">
+                                <button type="button"
+                                    class="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
+                                    onclick="openModal('userDetailModal{{ user.user_id }}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+                                <button type="button"
+                                    class="text-indigo-600 hover:text-indigo-900 p-1 rounded hover:bg-indigo-50"
+                                    onclick="openModal('editUserModal{{ user.user_id }}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                {% if user.user_id != current_user.user_id %}
+                                <button type="button"
+                                    class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                                    onclick="openModal('deleteUserModal{{ user.user_id }}')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- ====================== -->
+    <!-- MODAL COMPONENTS       -->
+    <!-- ====================== -->
+
+    <!-- Modal Backdrop (shared across all modals) -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden z-40"></div>
+
+    <!-- 1. HR/ADMIN ONLY: Add Employee Modal -->
+    <div id="addEmployeeModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div
+            class="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 transform transition-all max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold text-gray-900">Add New Employee</h3>
+                    <button type="button" onclick="closeModal('addEmployeeModal')"
+                        class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <form action="/employees" method="post" class="space-y-4">
+                    <!-- Employee Code (single line) -->
+                    <div>
+                        <label for="emp_code" class="block text-gray-700 text-sm font-bold mb-2">
+                            Employee Code <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="emp_code" name="emp_code" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px] bg-gray-100 cursor-not-allowed"
+                            placeholder="e.g. EMP001" readonly>
+                    </div>
+
+                    <!-- Prefix & First Name and Last Name -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="prefix_first_name" class="block text-gray-700 text-sm font-bold mb-2">
+                                Prefix &amp; First Name <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex space-x-2">
+                                <select id="prefix" name="prefix" required
+                                    class="shadow border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]">
+                                    <option value="Mr.">Mr.</option>
+                                    <option value="Ms.">Ms.</option>
+                                    <option value="Mrs.">Mrs.</option>
+                                    <option value="Dr.">Dr.</option>
+                                </select>
+                                <input type="text" id="first_name" name="first_name" required
+                                    class="shadow appearance-none border rounded w-2/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]"
+                                    placeholder="First Name">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-gray-700 text-sm font-bold mb-2">
+                                Last Name
+                            </label>
+                            <input type="text" id="last_name" name="last_name"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]">
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Email and Phone -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email <span
+                                    class="text-red-500">*</span></label>
+                            <input type="email" id="email" name="email" required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]"
+                                placeholder="example@company.com">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone </label>
+                            <input type="tel" id="phone" name="phone"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]"
+                                placeholder="+66-123-456-789">
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Thai ID and Employment Type -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="thai_id_or_passport" class="block text-gray-700 text-sm font-bold mb-2">Thai ID
+                                / Passport</label>
+                            <input type="text" id="thai_id_or_passport" name="thai_id_or_passport"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]"
+                                placeholder="1-2345-67890-12-3">
+                        </div>
+                        <div>
+                            <label for="employment" class="block text-gray-700 text-sm font-bold mb-2">Employment Type
+                                <span class="text-red-500">*</span></label>
+                            <select id="employment" name="employment" required
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]">
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Intern">Intern</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Status and Salary -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status <span
+                                    class="text-red-500">*</span></label>
+                            <select id="status" name="status" required
+                                class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]">
+                                <option value="single">Single</option>
+                                <option value="married">Married</option>
+                                <option value="divorce">Divorce</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="salary" class="block text-gray-700 text-sm font-bold mb-2">Salary</label>
+                            <input type="number" id="salary" name="salary"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]"
+                                placeholder="e.g. 30000">
+                        </div>
+                    </div>
+                    
+                    <!-- NEW ROW: Start Date and Leave Date -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="start_date" class="block text-gray-700 text-sm font-bold mb-2">
+                                Start Date <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" id="start_date" name="start_date" required
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]">
+                        </div>
+                        <div>
+                            <label for="leave_date" class="block text-gray-700 text-sm font-bold mb-2">
+                                Leave Date
+                            </label>
+                            <input type="date" id="leave_date" name="leave_date"
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500 h-[38px]">
+                        </div>
+                    </div>
+
+                    <!-- Row 6: Address -->
+                    <div>
+                        <label for="address" class="block text-gray-700 text-sm font-bold mb-2">Address</label>
+                        <textarea id="address" name="address"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500"
+                            rows="3" placeholder="123 Main St, City, Country"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-6">
+                        <button type="submit"
+                            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                            Add Employee
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. HR/ADMIN ONLY: Edit Employee Modals -->
+    {% for employee in employees %}
+    <div id="editModal{{ employee.employee_id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-200 bg-blue-50 rounded-t-xl sticky top-0 z-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </div>
+                        <h3 class="ml-3 text-lg font-semibold text-gray-900">Edit Employee</h3>
+                    </div>
+                    <button type="button" class="text-gray-400 hover:text-gray-500"
+                        onclick="closeModal('editModal{{ employee.employee_id }}')">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <form action="/employees/{{ employee.employee_id }}/update" method="post" class="space-y-6">
+                    <!-- Form sections -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Employee Code -->
+                        <div>
+                            <label for="emp_code{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Employee Code
+                            </label>
+                            <input type="text" id="emp_code{{ employee.employee_id }}" name="emp_code" 
+                                   value="{{ employee.emp_code }}" required
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <!-- Prefix -->
+                        <div>
+                            <label for="prefix{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Prefix
+                            </label>
+                            <select id="prefix{{ employee.employee_id }}" name="prefix"
+                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+
+                                <option value="Mr." {% if employee.prefix == "Mr." %}selected{% endif %}>Mr.</option>
+                                <option value="Mrs." {% if employee.prefix == "Mrs." %}selected{% endif %}>Mrs.</option>
+                                <option value="Miss" {% if employee.prefix == "Miss" %}selected{% endif %}>Miss</option>
+                                <option value="Dr." {% if employee.prefix == "Dr." %}selected{% endif %}>Dr.</option>
+                            </select>
+                        </div>
+                        
+                        <!-- First Name -->
+                        <div>
+                            <label for="first_name{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                First Name
+                            </label>
+                            <input type="text" id="first_name{{ employee.employee_id }}" name="first_name" 
+                                   value="{{ employee.first_name }}" required
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Last Name -->
+                        <div>
+                            <label for="last_name{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Last Name
+                            </label>
+                            <input type="text" id="last_name{{ employee.employee_id }}" name="last_name" 
+                                   value="{{ employee.last_name }}" required
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <!-- Email -->
+                        <div>
+                            <label for="email{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Email
+                            </label>
+                            <input type="email" id="email{{ employee.employee_id }}" name="email" 
+                                   value="{{ employee.email or '' }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <!-- Phone -->
+                        <div>
+                            <label for="phone{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Phone
+                            </label>
+                            <input type="text" id="phone{{ employee.employee_id }}" name="phone" 
+                                   value="{{ employee.phone or '' }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Thai ID/Passport -->
+                        <div>
+                            <label for="thai_id_or_passport{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Thai ID/Passport
+                            </label>
+                            <input type="text" id="thai_id_or_passport{{ employee.employee_id }}" name="thai_id_or_passport" 
+                                   value="{{ employee.thai_id_or_passport or '' }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <!-- Employment Type -->
+                        <div>
+                            <label for="employment{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Employment Type
+                            </label>
+                            <select id="employment{{ employee.employee_id }}" name="employment"
+                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="" {% if not employee.employment %}selected{% endif %}>Select Type</option>
+                                <option value="full-time" {% if employee.employment == "full-time" %}selected{% endif %}>Full Time</option>
+                                <option value="part-time" {% if employee.employment == "part-time" %}selected{% endif %}>Part Time</option>
+                                <option value="contract" {% if employee.employment == "contract" %}selected{% endif %}>Contract</option>
+                                <option value="intern" {% if employee.employment == "intern" %}selected{% endif %}>Intern</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div>
+                            <label for="status{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Status
+                            </label>
+                            <select id="status{{ employee.employee_id }}" name="status"
+                                    class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="" {% if not employee.status %}selected{% endif %}>Select Status</option>
+                                <option value="single" {% if employee.status == "single" %}selected{% endif %}>Single</option>
+                                <option value="married" {% if employee.status == "married" %}selected{% endif %}>Married</option>
+                                <option value="divorced" {% if employee.status == "divorced" %}selected{% endif %}>Divorced</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Salary -->
+                        <div>
+                            <label for="salary{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Salary
+                            </label>
+                            <input type="number" step="0.01" id="salary{{ employee.employee_id }}" name="salary" 
+                                   value="{{ employee.salary or '' }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <!-- Start Date -->
+                        <div>
+                            <label for="start_date{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Start Date
+                            </label>
+                            <input type="date" id="start_date{{ employee.employee_id }}" name="start_date" 
+                                   value="{{ employee.start_date }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <!-- Leave Date -->
+                        <div>
+                            <label for="leave_date{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                                Leave Date
+                            </label>
+                            <input type="date" id="leave_date{{ employee.employee_id }}" name="leave_date" 
+                                   value="{{ employee.leave_date }}"
+                                   class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div>
+                        <label for="address{{ employee.employee_id }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Address
+                        </label>
+                        <textarea id="address{{ employee.employee_id }}" name="address" rows="3"
+                                  class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ employee.address or '' }}</textarea>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <button type="button" 
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                onclick="closeModal('editModal{{ employee.employee_id }}')">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+
+<!-- 3. ADMIN ONLY: Delete Employee Modals -->
+{% if current_user and current_user.role == "admin" %}
+{% for employee in employees %}
+<div id="deleteModal{{ employee.employee_id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <!-- Backdrop with blur effect -->
+    <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+
+    <!-- Modal Content -->
+    <div class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-red-50 rounded-t-xl">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                    </div>
+                    <h3 class="ml-3 text-lg font-semibold text-gray-900">Delete Employee</h3>
+                </div>
+                <button type="button" class="text-gray-400 hover:text-gray-500"
+                    onclick="closeModal('deleteModal{{ employee.employee_id }}')">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="px-6 py-6">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </div>
+                <h4 class="text-lg font-medium text-gray-900 mb-2">Are you sure you want to delete this employee?</h4>
+                <p class="text-gray-600 mb-4">Employee: <span class="font-semibold">{{ employee.full_name }}</span></p>
+                <p class="text-gray-500 mb-4">Employee Code: <span class="font-medium">{{ employee.emp_code }}</span>
+                </p>
+                <p class="text-red-600 text-sm mb-4">This action cannot be undone.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end space-x-3">
+            <button type="button"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 h-10 flex items-center"
+                onclick="closeModal('deleteModal{{ employee.employee_id }}')">
+                Cancel
+            </button>
+            <form action="/employees/{{ employee.employee_id }}/delete" method="post" class="inline">
+                <button type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 h-10 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete Employee
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<!-- 4. ADMIN ONLY: User Management Modals -->
+
+<!-- Add User Modal -->
+<div id="addUserModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div
+        class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Add New User</h3>
+                <button type="button" onclick="closeModal('addUserModal')"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <form action="/users" method="post" class="space-y-4">
+                <input type="hidden" name="redirect_to" value="/home">
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label for="username" class="block text-gray-700 text-sm font-bold mb-2">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="username" name="username" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
+                            Email <span class="text-red-500">*</span>
+                        </label>
+                        <input type="email" id="email" name="email" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">
+                            Password <span class="text-red-500">*</span>
+                        </label>
+                        <input type="password" id="password" name="password" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="role" class="block text-gray-700 text-sm font-bold mb-2">
+                            Role <span class="text-red-500">*</span>
+                        </label>
+                        <select id="role" name="role" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                            <option value="user">User</option>
+                            <option value="hr">HR</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button type="submit"
+                        class="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                        Add User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- User Modals -->
+{% for user in users %}
+<!-- User Detail Modal -->
+<div id="userDetailModal{{ user.user_id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <div class="px-6 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">User Details</h3>
+                <button type="button" onclick="closeModal('userDetailModal{{ user.user_id }}')"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="flex justify-center mb-6">
+                    <div
+                        class="h-24 w-24 rounded-full bg-gradient-to-r from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xl font-bold">
+                        {{ user.username[0:2].upper() }}
+                    </div>
+                </div>
+
+                <div class="border-b pb-2">
+                    <p class="text-sm text-gray-500">Username</p>
+                    <p class="text-lg font-medium">{{ user.username }}</p>
+                </div>
+
+
+                <div class="border-b pb-2">
+                    <p class="text-sm text-gray-500">Email</p>
+                    <p class="text-lg font-medium">{{ user.email }}</p>
+                </div>
+
+                <div class="border-b pb-2">
+                    <p class="text-sm text-gray-500">Role</p>
+                    <p>
+                        {% if user.role == "admin" %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Admin
+                        </span>
+                        {% elif user.role == "hr" %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            HR
+                        </span>
+                        {% else %}
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            User
+                        </span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="border-b pb-2">
+                    <p class="text-sm text-gray-500">Created</p>
+                    <p class="text-lg font-medium">{{ user.created_at[:16] }}</p>
+                </div>
+
+                <div>
+                    <p class="text-sm text-gray-500">Last Updated</p>
+                    <p class="text-lg font-medium">{{ user.updated_at[:16] }}</p>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end space-x-3">
+                <button type="button"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150"
+                    onclick="closeModal('userDetailModal{{ user.user_id }}')">
+                    Close
+                </button>
+                <button type="button"
+                    class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150"
+                    onclick="closeModal('userDetailModal{{ user.user_id }}'); openModal('editUserModal{{ user.user_id }}')">
+                    Edit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div id="editUserModal{{ user.user_id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div
+        class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-900">Edit User</h3>
+                <button type="button" onclick="closeModal('editUserModal{{ user.user_id }}')"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <form action="/users/{{ user.user_id }}/update" method="post" class="space-y-4">
+                <input type="hidden" name="redirect_to" value="/home">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        Username
+                    </label>
+                    <input type="text" value="{{ user.username }}" disabled
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 bg-gray-100 leading-tight">
+                </div>
+
+                <div>
+                    <label for="edit_email{{ user.user_id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                        Email <span class="text-red-500">*</span>
+                    </label>
+                    <input type="email" id="edit_email{{ user.user_id }}" name="email" required value="{{ user.email }}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                </div>
+                <div>
+                    <label for="edit_role{{ user.user_id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                        Role <span class="text-red-500">*</span>
+                    </label>
+                    <select id="edit_role{{ user.user_id }}" name="role" required
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                        <option value="user" {% if user.role=="user" %}selected{% endif %}>User</option>
+                        <option value="hr" {% if user.role=="hr" %}selected{% endif %}>HR</option>
+                        <option value="admin" {% if user.role=="admin" %}selected{% endif %}>Admin</option>
+                    </select>
+                </div>
+
+                <div class="pt-4 border-t mt-6">
+                    <button type="submit"
+                        class="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                        Update User
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-4 border-t">
+                <h4 class="text-lg font-semibold text-gray-900 mb-4">Reset Password</h4>
+                <form action="/users/{{ user.user_id }}/reset-password" method="post">
+                    <input type="hidden" name="redirect_to" value="/home">
+                    <div>
+                        <label for="new_password{{ user.user_id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                            New Password <span class="text-red-500">*</span>
+                        </label>
+                        <input type="password" id="new_password{{ user.user_id }}" name="new_password" required
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit"
+                            class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                            Reset Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+{% if user.user_id != current_user.user_id %}
+<div id="deleteUserModal{{ user.user_id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+    <div class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+        <div class="px-6 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-red-600">Delete User</h3>
+                <button type="button" onclick="closeModal('deleteUserModal{{ user.user_id }}')"
+                    class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<!-- Add this near the top of your template to check critical variables -->
+{% if not current_user %}
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+    <p>Error: You must be logged in to view this page.</p>
+</div>
+{% endif %}
+
+<script>
+    // Modal handling
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        document.getElementById('modal-backdrop').classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+        document.getElementById('modal-backdrop').classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    function deleteUser(userId) {
+        document.querySelector(`form[action="/users/${userId}/delete"]`).submit();
+    }
+
+    // When page loads
+    document.addEventListener('DOMContentLoaded', function () {
+        // Set up auto-generated employee code
+        const openAddEmployeeModalBtn = document.getElementById('openAddEmployeeModal');
+        const empCodeInput = document.getElementById('emp_code');
+
+        if (openAddEmployeeModalBtn && empCodeInput) {
+            openAddEmployeeModalBtn.addEventListener('click', function () {
+                empCodeInput.value = '{{ auto_gen_employee_code }}';
+                openModal('addEmployeeModal');
+            });
+        }
+
+        // For empty state button
+        const emptyStateBtn = document.getElementById('emptyStateAddEmployee');
+        if (emptyStateBtn && empCodeInput) {
+            emptyStateBtn.addEventListener('click', function () {
+                empCodeInput.value = '{{ auto_gen_employee_code }}';
+                openModal('addEmployeeModal');
+            });
+        }
+
+        // Set up user modal button
+        const openAddUserModalBtn = document.getElementById('openAddUserModal');
+        if (openAddUserModalBtn) {
+            openAddUserModalBtn.addEventListener('click', function () {
+                openModal('addUserModal');
+            });
+        }
+
+        // Handle URL parameters for success/error messages
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        const error = urlParams.get('error');
+
+        if (message) {
+            // Create success message element
+            const successEl = document.createElement('div');
+            successEl.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4';
+            successEl.innerHTML = `<span class="block sm:inline">${message}</span>`;
+
+            // Insert before the first element in the container
+            const container = document.querySelector('.container');
+            container.insertBefore(successEl, container.firstChild.nextSibling);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                successEl.remove();
+                // Remove from URL without reloading
+                const url = new URL(window.location);
+                url.searchParams.delete('message');
+                window.history.replaceState({}, '', url);
+            }, 5000);
+        }
+
+        if (error) {
+            // Create error message element
+            const errorEl = document.createElement('div');
+            errorEl.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4';
+            errorEl.innerHTML = `<span class="block sm:inline">${error}</span>`;
+
+            // Insert before the first element in the container
+            const container = document.querySelector('.container');
+            container.insertBefore(errorEl, container.firstChild.nextSibling);
+
+            // Remove after 5 seconds
+            setTimeout(() => {
+                errorEl.remove();
+                // Remove from URL without reloading
+                const url = new URL(window.location);
+                url.searchParams.delete('error');
+                window.history.replaceState({}, '', url);
+            }, 5000);
+        }
+    });
+
+    // Add CSS for employment and status badges
+    document.addEventListener('DOMContentLoaded', function () {
+        // Employment badge colors
+        const employmentStyles = `
+                .employment-badge.employment-full_time { background-color: #E6F4FF; color: #0064D2; }
+                .employment-badge.employment-part_time { background-color: #F3E8FF; color: #7E22CE; }
+                .employment-badge.employment-contract { background-color: #ECFDF5; color: #0F766E; }
+                .employment-badge.employment-intern { background-color: #FEF3C7; color: #92400E; }
+            `;
+
+        // Status badge colors
+        const statusStyles = `
+                .status-badge.status-active { background-color: #D1FAE5; color: #065F46; }
+                .status-badge.status-inactive { background-color: #FEE2E2; color: #991B1B; }
+                .status-badge.status-leave { background-color: #FEF3C7; color: #92400E; }
+                .status-badge.status-single { background-color: #E0F2FE; color: #0369A1; }
+                .status-badge.status-married { background-color: #E0E7FF; color: #3730A3; }
+                .status-badge.status-divorce { background-color: #FFE4E6; color: #9F1239; }
+            `;
+
+        // Add styles to head
+        const styleEl = document.createElement('style');
+        styleEl.textContent = employmentStyles + statusStyles;
+        document.head.appendChild(styleEl);
+    });
+
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all employee forms (add and edit)
+        const employeeForms = document.querySelectorAll('form[action^="/employees"]');
+        
+        employeeForms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                let errorMessage = '';
+                
+                // Check required fields
+                const requiredFields = ['emp_code', 'first_name', 'last_name'];
+                requiredFields.forEach(field => {
+                    const input = form.querySelector(`[name="${field}"]`);
+                    if (input && !input.value.trim()) {
+                        input.classList.add('border-red-500');
+                        isValid = false;
+                        errorMessage = `${field.replace('_', ' ')} is required`;
+                    } else if (input) {
+                        input.classList.remove('border-red-500');
+                    }
+                });
+                
+                // Email validation if provided
+                const emailInput = form.querySelector('[name="email"]');
+                if (emailInput && emailInput.value.trim()) {
+                    if (!emailInput.value.includes('@')) {
+                        emailInput.classList.add('border-red-500');
+                        isValid = false;
+                        errorMessage = 'Please enter a valid email address';
+                    } else {
+                        emailInput.classList.remove('border-red-500');
+                    }
+                }
+                
+                // If validation fails, prevent form submission
+                if (!isValid) {
+                    event.preventDefault();
+                    // Show error message
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4';
+                    errorDiv.innerHTML = `<p>${errorMessage}</p>`;
+                    
+                    // Insert at top of form
+                    form.prepend(errorDiv);
+                    
+                    // Remove after 3 seconds
+                    setTimeout(() => {
+                        errorDiv.remove();
+                    }, 3000);
+                }
+            });
+        });
+    });
+</script>
+</div>
+{% endblock %}

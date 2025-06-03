@@ -1,0 +1,93 @@
+{% extends "index.html" %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">User Profile</h1>
+        
+        
+        
+        <div class="bg-white shadow-md rounded-lg overflow-hidden mb-6">
+            <div class="bg-gray-50 px-4 py-3 border-b">
+                <h2 class="text-lg font-semibold">Profile Information</h2>
+            </div>
+            <div class="p-6">
+                <form method="post" action="/profile/update">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
+                            <input type="text" name="username" value="{{ user.username }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                            <input type="email" name="email" value="{{ user.email }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                            Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-gray-50 px-4 py-3 border-b">
+                <h2 class="text-lg font-semibold">Change Password</h2>
+            </div>
+            <div class="p-6">
+                <form method="post" action="/profile/change-password">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="current_password" class="block text-gray-700 text-sm font-bold mb-2">Current Password</label>
+                            <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500" id="current_password" name="current_password" required>
+                        </div>
+                        <div>
+                            <label for="new_password" class="block text-gray-700 text-sm font-bold mb-2">New Password</label>
+                            <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500" id="new_password" name="new_password" required>
+                        </div>
+                        <div>
+                            <label for="confirm_password" class="block text-gray-700 text-sm font-bold mb-2">Confirm New Password</label>
+                            <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-blue-500" id="confirm_password" name="confirm_password" required>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                            Change Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector('form[action="/profile/change-password"]');
+    if (form) {
+        form.addEventListener("submit", function(e) {
+            const newPassword = form.querySelector('input[name="new_password"]').value;
+            const confirmPassword = form.querySelector('input[name="confirm_password"]').value;
+            if (newPassword !== confirmPassword) {
+                e.preventDefault();
+                // Show floating error message
+                let errorDiv = document.getElementById("password-error");
+                if (!errorDiv) {
+                    errorDiv = document.createElement("div");
+                    errorDiv.id = "password-error";
+                    errorDiv.className = "fixed top-24 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg";
+                    document.body.appendChild(errorDiv);
+                }
+                errorDiv.textContent = "New passwords do not match.";
+                // Auto-dismiss after 3 seconds
+                setTimeout(() => {
+                    if (errorDiv) errorDiv.remove();
+                }, 3000);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

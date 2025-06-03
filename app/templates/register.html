@@ -1,0 +1,100 @@
+{% extends "index.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <div class="flex justify-center mt-10">
+        <div class="w-full max-w-md">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="px-6 py-4">
+                    <h2 class="text-2xl font-bold text-center mb-6">Register</h2>
+                    
+                    <!-- Error Message -->
+                    {% if error %}
+                    <div id="error-alert" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 relative">
+                        <strong class="font-bold">Error!</strong>
+                        <span class="block sm:inline">{{ error }}</span>
+                        <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="document.getElementById('error-alert').style.display='none'">
+                            <span class="text-xl">&times;</span>
+                        </button>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Registration Form -->
+                    <form method="post" action="/register">
+                        <div class="mb-4">
+                            <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+                            <input type="text" id="username" name="username" required 
+                                   value="{{ username if username else '' }}"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                            <input type="email" id="email" name="email" required 
+                                   value="{{ email if email else '' }}"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                            <input type="password" id="password" name="password" required 
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="confirm_password" class="block text-gray-700 text-sm font-bold mb-2">Confirm Password:</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required 
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Register
+                            </button>
+                            <a href="/login" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                                Already have an account?
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const errorAlert = document.getElementById('error-alert');
+            if (errorAlert) errorAlert.style.display = 'none';
+        }, 5000);
+
+        // Add to register.html
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                const errorEl = document.createElement('div');
+                errorEl.id = 'error-alert';
+                errorEl.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 relative';
+                errorEl.innerHTML = `
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline">Passwords do not match</span>
+                    <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                        <span class="text-xl">&times;</span>
+                    </button>
+                `;
+                
+                // Insert before the form
+                this.parentElement.insertBefore(errorEl, this);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (errorEl) errorEl.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+
+{% endblock %}
