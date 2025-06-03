@@ -65,3 +65,11 @@ coverage.xml
 
 # Project specific ignores
 .qod
+
+# Add to your .gitignore
+.env
+*.db
+__pycache__/
+# Don't ignore these
+!Dockerfile
+!docker-compose.yml
