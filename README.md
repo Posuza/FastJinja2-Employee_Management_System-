@@ -38,6 +38,7 @@ A modern web application built with FastAPI for managing employee information, u
 - Python 3.7+
 - pip (Python package manager)
 - Virtual environment (recommended)
+- Docker (optional for containerized deployment)
 
 ## ⚙️ Installation
 
@@ -70,6 +71,32 @@ A modern web application built with FastAPI for managing employee information, u
    EMPLOYEE_CODE_DIGITS=6
    ```
 
+## 🐳 Docker Deployment
+
+1. **Build the Docker image:**
+   ```bash
+   docker build -t employee-management-system .
+   ```
+
+2. **Run the container:**
+   ```bash
+   docker run -d -p 8000:8000 --name employee-system employee-management-system
+   ```
+
+3. **Access the application:**
+   - Web Interface: [http://localhost:8000](http://localhost:8000)
+   - API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+4. **View container logs:**
+   ```bash
+   docker logs employee-system
+   ```
+
+5. **Stop the container:**
+   ```bash
+   docker stop employee-system
+   ```
+
 ## 📁 Project Structure
 
 ```
@@ -97,6 +124,7 @@ demo/
 ├── myEnv/               # Virtual environment (not in repo)
 ├── requirements.txt     # Project dependencies
 ├── .env                 # Environment variables (not in repo)
+├── Dockerfile           # Docker configuration
 └── README.md            # Project documentation
 ```
 
@@ -211,6 +239,10 @@ The application uses two main tables:
 - **JWT Authentication Issues:**
   - Verify `SECRET_KEY` is set in `.env` file
   - Check token expiration settings
+- **Docker Issues:**
+  - Ensure Docker daemon is running
+  - Check for port conflicts with `docker ps`
+  - Inspect logs with `docker logs employee-system`
 
 ## 📦 Requirements
 
