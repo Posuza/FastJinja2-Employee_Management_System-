@@ -44,7 +44,7 @@ A modern web application built with FastAPI for managing employee information, u
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/employee-management-system.git
+    https://github.com/Posuza/FastJinja2-Employee_Management_System-.git
    cd employee-management-system
    ```
 
@@ -70,6 +70,17 @@ A modern web application built with FastAPI for managing employee information, u
    EMPLOYEE_CODE_PREFIX=EMP
    EMPLOYEE_CODE_DIGITS=6
    ```
+
+## 🚀 Running the Application Locally
+
+1. **Start the FastAPI server:**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+2. **Access the application:**
+   - Web Interface: [http://localhost:8000](http://localhost:8000)
+   - API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## 🐳 Docker Deployment
 
@@ -127,17 +138,6 @@ demo/
 ├── Dockerfile           # Docker configuration
 └── README.md            # Project documentation
 ```
-
-## 🚀 Running the Application
-
-1. **Start the FastAPI server:**
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-
-2. **Access the application:**
-   - Web Interface: [http://localhost:8000](http://localhost:8000)
-   - API Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## 🔑 API Endpoints
 
