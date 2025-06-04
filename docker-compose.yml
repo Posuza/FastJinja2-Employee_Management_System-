@@ -19,7 +19,7 @@ services:
     image: cloudflare/cloudflared:latest
     restart: always
     environment:
-      - TUNNEL_TOKEN=eyJhIjoiOTZjNjUxYmJjN2FlOWYzNDNhZGJhNGM0ZDNmOTY5MzAiLCJ0IjoiNTMxNTk0OGMtYTQyYy00NWNhLTgyNDEtMDc5YjFiMjU0OTI2IiwicyI6Ik0yWXhNbVl3T0dFdE1XUTBaaTAwTURJekxUaGtZV0l0WlRJM1pUWXlZek00TW1ZeCJ9
+      - TUNNEL_TOKEN=your token
     command: tunnel run
     depends_on:
       - web
