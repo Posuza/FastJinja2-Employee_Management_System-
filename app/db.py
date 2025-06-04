@@ -23,7 +23,7 @@ metadata = sqlalchemy.MetaData()
 # User table
 users_table = sqlalchemy.Table(
     "User",
-    metadata,
+    metadata, 
     sqlalchemy.Column("user_id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
     sqlalchemy.Column("username", sqlalchemy.String(50), unique=True, nullable=False),
     sqlalchemy.Column("email", sqlalchemy.String(100), unique=True, nullable=False),

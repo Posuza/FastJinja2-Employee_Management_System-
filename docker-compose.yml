@@ -7,12 +7,8 @@ services:
       - "8000:8000"
     volumes:
       - employee-data:/app/data
-    environment:
-      - SECRET_KEY=your_secret_key
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - EMPLOYEE_CODE_PREFIX=EMP
-      - EMPLOYEE_CODE_DIGITS=6
+    env_file:
+      - .env.docker
     restart: always
 
   cloudflared:
