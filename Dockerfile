@@ -15,7 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Create and set permissions for data directory
+RUN mkdir -p /app/data && chmod 777 /app/data
+
 EXPOSE 8000
 
-# Changed from localhost to 0.0.0.0 to allow external connections
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
