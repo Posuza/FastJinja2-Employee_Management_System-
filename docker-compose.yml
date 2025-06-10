@@ -14,8 +14,8 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: always
-    environment:
-      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    env_file:
+      - .env.docker
     command: tunnel run
     depends_on:
       - web

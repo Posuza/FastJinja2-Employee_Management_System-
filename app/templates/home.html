@@ -361,8 +361,8 @@
                                 <button type="button"
                                     class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
                                     onclick="openModal('deleteUserModal{{ user.user_id }}')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -549,6 +549,7 @@
                             <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                       d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
                         </div>
                         <h3 class="ml-3 text-lg font-semibold text-gray-900">Edit Employee</h3>
                     </div>
@@ -755,6 +756,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                                 clip-rule="evenodd" />
+                        </svg>
                     </div>
                     <h3 class="ml-3 text-lg font-semibold text-gray-900">Delete Employee</h3>
                 </div>
@@ -962,9 +964,9 @@
 </div>
 
 <!-- Edit User Modal -->
+<!-- Edit User Modal -->
 <div id="editUserModal{{ user.user_id }}" class="fixed inset-0 flex items-center justify-center z-50 hidden">
-    <div
-        class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all max-h-[90vh] overflow-y-auto">
+    <div class="relative bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 transform transition-all max-h-[90vh] overflow-y-auto">
         <div class="px-6 py-6">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-xl font-semibold text-gray-900">Edit User</h3>
@@ -977,14 +979,16 @@
                 </button>
             </div>
 
+            <!-- User Update Form -->
             <form action="/users/{{ user.user_id }}/update" method="post" class="space-y-4">
                 <input type="hidden" name="redirect_to" value="/home">
+                
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2">
-                        Username
+                    <label for="edit_username{{ user.user_id }}" class="block text-gray-700 text-sm font-bold mb-2">
+                        Username <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" value="{{ user.username }}" disabled
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 bg-gray-100 leading-tight">
+                    <input type="text" id="edit_username{{ user.user_id }}" name="username" required value="{{ user.username }}"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
                 </div>
 
                 <div>
@@ -994,6 +998,7 @@
                     <input type="email" id="edit_email{{ user.user_id }}" name="email" required value="{{ user.email }}"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring focus:border-indigo-500">
                 </div>
+                
                 <div>
                     <label for="edit_role{{ user.user_id }}" class="block text-gray-700 text-sm font-bold mb-2">
                         Role <span class="text-red-500">*</span>
@@ -1005,8 +1010,17 @@
                         <option value="admin" {% if user.role=="admin" %}selected{% endif %}>Admin</option>
                     </select>
                 </div>
+
+                <!-- Update Button -->
+                <div class="mt-6">
+                    <button type="submit"
+                        class="w-full bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150">
+                        Update User
+                    </button>
+                </div>
             </form>
 
+            <!-- Password Reset Section -->
             <div class="mt-8 pt-4 border-t">
                 <h4 class="text-lg font-semibold text-gray-900 mb-4">Reset Password</h4>
                 <form action="/users/{{ user.user_id }}/reset-password" method="post">
@@ -1043,17 +1057,39 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
+                </button>
+            </div>
+
+            <div class="text-center">
+                <p class="text-gray-700 mb-4">Are you sure you want to delete this user?</p>
+                <p class="text-gray-500 mb-4">Username: <span class="font-medium">{{ user.username }}</span></p>
+                <p class="text-gray-500 mb-4">Email: <span class="font-medium">{{ user.email }}</span></p>
+                <p class="text-red-600 text-sm mb-4">This action cannot be undone.</p>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end space-x-3">
+            <button type="button"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 h-10 flex items-center"
+                onclick="closeModal('deleteUserModal{{ user.user_id }}')">
+                Cancel
+            </button>
+            <form action="/users/{{ user.user_id }}/delete" method="post" class="inline">
+                <button type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 h-10 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete User
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 {% endif %}
 {% endfor %}
-{% endif %}
-
-<!-- Add this near the top of your template to check critical variables -->
-{% if not current_user %}
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-    <p>Error: You must be logged in to view this page.</p>
-</div>
 {% endif %}
 
 <script>
@@ -1103,51 +1139,6 @@
                 openModal('addUserModal');
             });
         }
-
-        // Handle URL parameters for success/error messages
-        const urlParams = new URLSearchParams(window.location.search);
-        const message = urlParams.get('message');
-        const error = urlParams.get('error');
-
-        if (message) {
-            // Create success message element
-            const successEl = document.createElement('div');
-            successEl.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4';
-            successEl.innerHTML = `<span class="block sm:inline">${message}</span>`;
-
-            // Insert before the first element in the container
-            const container = document.querySelector('.container');
-            container.insertBefore(successEl, container.firstChild.nextSibling);
-
-            // Remove after 5 seconds
-            setTimeout(() => {
-                successEl.remove();
-                // Remove from URL without reloading
-                const url = new URL(window.location);
-                url.searchParams.delete('message');
-                window.history.replaceState({}, '', url);
-            }, 5000);
-        }
-
-        if (error) {
-            // Create error message element
-            const errorEl = document.createElement('div');
-            errorEl.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4';
-            errorEl.innerHTML = `<span class="block sm:inline">${error}</span>`;
-
-            // Insert before the first element in the container
-            const container = document.querySelector('.container');
-            container.insertBefore(errorEl, container.firstChild.nextSibling);
-
-            // Remove after 5 seconds
-            setTimeout(() => {
-                errorEl.remove();
-                // Remove from URL without reloading
-                const url = new URL(window.location);
-                url.searchParams.delete('error');
-                window.history.replaceState({}, '', url);
-            }, 5000);
-        }
     });
 
     // Add CSS for employment and status badges
@@ -1159,33 +1150,21 @@
                 .employment-badge.employment-contract { background-color: #ECFDF5; color: #0F766E; }
                 .employment-badge.employment-intern { background-color: #FEF3C7; color: #92400E; }
             `;
-
-        // Status badge colors
         const statusStyles = `
                 .status-badge.status-active { background-color: #D1FAE5; color: #065F46; }
                 .status-badge.status-inactive { background-color: #FEE2E2; color: #991B1B; }
-                .status-badge.status-leave { background-color: #FEF3C7; color: #92400E; }
-                .status-badge.status-single { background-color: #E0F2FE; color: #0369A1; }
-                .status-badge.status-married { background-color: #E0E7FF; color: #3730A3; }
-                .status-badge.status-divorce { background-color: #FFE4E6; color: #9F1239; }
             `;
+        const styleSheet = document.createElement("style");
+        styleSheet.type = "text/css";
+        styleSheet.innerText = employmentStyles + statusStyles;
+        document.head.appendChild(styleSheet);
 
-        // Add styles to head
-        const styleEl = document.createElement('style');
-        styleEl.textContent = employmentStyles + statusStyles;
-        document.head.appendChild(styleEl);
-    });
-
-    // Form validation
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get all employee forms (add and edit)
+        // Form validation
         const employeeForms = document.querySelectorAll('form[action^="/employees"]');
-        
         employeeForms.forEach(form => {
             form.addEventListener('submit', function(event) {
                 let isValid = true;
                 let errorMessage = '';
-                
                 // Check required fields
                 const requiredFields = ['emp_code', 'first_name', 'last_name'];
                 requiredFields.forEach(field => {
@@ -1198,7 +1177,6 @@
                         input.classList.remove('border-red-500');
                     }
                 });
-                
                 // Email validation if provided
                 const emailInput = form.querySelector('[name="email"]');
                 if (emailInput && emailInput.value.trim()) {
@@ -1210,22 +1188,9 @@
                         emailInput.classList.remove('border-red-500');
                     }
                 }
-                
                 // If validation fails, prevent form submission
                 if (!isValid) {
                     event.preventDefault();
-                    // Show error message
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4';
-                    errorDiv.innerHTML = `<p>${errorMessage}</p>`;
-                    
-                    // Insert at top of form
-                    form.prepend(errorDiv);
-                    
-                    // Remove after 3 seconds
-                    setTimeout(() => {
-                        errorDiv.remove();
-                    }, 3000);
                 }
             });
         });

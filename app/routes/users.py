@@ -22,12 +22,25 @@ async def users_page(request: Request, current_user: dict = Depends(get_current_
     query = "SELECT * FROM User ORDER BY created_at DESC"
     users = await db.database.fetch_all(query=query)
     
-    # Return the users page
-    return templates.TemplateResponse("users.html", {
+    # Extract message and error from URL parameters (like employees.py does)
+    message = request.query_params.get('message')
+    error = request.query_params.get('error')
+    
+    # Convert + to spaces and decode
+    if message:
+        message = message.replace('+', ' ')
+    if error:
+        error = error.replace('+', ' ')
+    
+    # Return the users page with message/error parameters
+    return templates.TemplateResponse("home.html", {
         "request": request,
         "current_user": current_user,
-        "users": users
+        "users": users,
+        "message": message,  # ← Add this
+        "error": error       # ← Add this
     })
+
 
 @router.post("/users")
 async def create_user(
@@ -129,7 +142,7 @@ async def create_user(
         query = "SELECT * FROM User ORDER BY created_at DESC"
         users = await db.database.fetch_all(query=query)
         
-        return templates.TemplateResponse("users.html", {
+        return templates.TemplateResponse("home.html", {
             "request": request,
             "current_user": current_user,
             "users": users,
@@ -154,7 +167,7 @@ async def get_user(request: Request, user_id: int, current_user: dict = Depends(
         raise HTTPException(status_code=404, detail="User not found")
     
     # Return user details
-    return templates.TemplateResponse("user_detail.html", {
+    return templates.TemplateResponse("home.html", {
         "request": request,
         "current_user": current_user,
         "user": dict(user)
@@ -164,6 +177,7 @@ async def get_user(request: Request, user_id: int, current_user: dict = Depends(
 async def update_user(
     request: Request,
     user_id: int,
+    username: str = Form(...),  # Add username parameter
     email: str = Form(...),
     role: str = Form(...),
     redirect_to: Optional[str] = Form("/users"),
@@ -183,16 +197,41 @@ async def update_user(
         if not user_to_update:
             raise HTTPException(status_code=404, detail="User not found")
         
-        # Update user - removed full_name field
+        # Check if username is taken by another user
+        if username.strip() != user_to_update['username']:
+            existing_username = await db.database.fetch_one(
+                query="SELECT user_id FROM User WHERE username = :username AND user_id != :user_id",
+                values={"username": username.strip(), "user_id": user_id}
+            )
+            if existing_username:
+                return RedirectResponse(
+                    url=f"{redirect_to}?error=Username+'{username}'+is+already+taken",
+                    status_code=status.HTTP_303_SEE_OTHER
+                )
+        
+        # Check if email is taken by another user
+        if email.strip() != user_to_update['email']:
+            existing_email = await db.database.fetch_one(
+                query="SELECT user_id FROM User WHERE email = :email AND user_id != :user_id",
+                values={"email": email.strip(), "user_id": user_id}
+            )
+            if existing_email:
+                return RedirectResponse(
+                    url=f"{redirect_to}?error=Email+address+is+already+registered",
+                    status_code=status.HTTP_303_SEE_OTHER
+                )
+        
+        # Update user - now includes username
         query = """
         UPDATE User 
-        SET email = :email, role = :role, updated_at = :updated_at
+        SET username = :username, email = :email, role = :role, updated_at = :updated_at
         WHERE user_id = :user_id
         """
         
         await db.database.execute(
             query=query,
             values={
+                "username": username.strip(),
                 "email": email.strip(),
                 "role": role.strip(),
                 "updated_at": datetime.utcnow(),
@@ -200,9 +239,9 @@ async def update_user(
             }
         )
         
-        # Return user details with success message
+        # Return with success message
         return RedirectResponse(
-            url=f"{redirect_to}?message=User+{user_to_update['username']}+updated+successfully",
+            url=f"{redirect_to}?message=User+{username}+updated+successfully",
             status_code=status.HTTP_303_SEE_OTHER
         )
         
@@ -277,7 +316,7 @@ async def reset_user_password(
 async def delete_user(
     request: Request,
     user_id: int,
-    redirect_to: Optional[str] = Form("/users"),
+    redirect_to: Optional[str] = Form("/home"),  # ← Change default to /home
     current_user: dict = Depends(get_current_user)
 ):
     """Delete user (admin only)"""
@@ -316,7 +355,7 @@ async def delete_user(
         
         # Return the users page with success message
         return RedirectResponse(
-            url=f"{redirect_to}?message=User+{user_to_delete['username']}+deleted+successfully",
+            url=f"/home?message=User+{user_to_delete['username']}+deleted+successfully",  # ← Always redirect to /home
             status_code=status.HTTP_303_SEE_OTHER
         )
         
@@ -325,7 +364,7 @@ async def delete_user(
         query = "SELECT * FROM User ORDER BY created_at DESC"
         users = await db.database.fetch_all(query=query)
         
-        return templates.TemplateResponse("users.html", {
+        return templates.TemplateResponse("home.html", {
             "request": request,
             "current_user": current_user,
             "users": users,
