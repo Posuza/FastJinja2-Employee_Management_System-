@@ -25,18 +25,82 @@ A modern web application built with FastAPI for managing employee information, u
   - Interactive web interface
   - Mobile-friendly layout
  
-  ## 📸 Screenshots
+## 📸 Screenshots
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/project_image/image1.png" alt="main Screen" width="45%">
-  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/dashboard.png" alt="Dashboard" width="45%">
+  <img src="project_images/image1.png" alt="Login Screen" width="45%">
+  <img src="project_images/image2.png" alt="Dashboard" width="45%">
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/employee-list.png" alt="Employee List" width="45%">
-  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/employee-add.png" alt="Add Employee Form" width="45%">
+  <img src="project_images/image3.png" alt="Employee List" width="45%">
+  <img src="project_images/image4.png" alt="Add Employee Form" width="45%">
 </div>
 
+## 🧑‍🏫 New User Tutorial
+
+### 1. Login Screen
+<div align="center">
+  <img src="project_images/image1.png" alt="Login Screen" width="80%">
+</div>
+
+Enter your username and password to access the system. If you don't have an account, click on the "Register" link to create one.
+
+### 2. Dashboard Overview
+<div align="center">
+  <img src="project_images/image2.png" alt="Dashboard" width="80%">
+</div>
+
+The dashboard provides a quick overview of key metrics including total employees, departments, and recent activities.
+
+### 3. Employee Management
+<div align="center">
+  <img src="project_images/image3.png" alt="Employee List" width="80%">
+</div>
+
+View all employees in a sortable and searchable table. Use the action buttons to edit, view details, or delete employee records.
+
+### 4. Adding New Employees
+<div align="center">
+  <img src="project_images/image4.png" alt="Add Employee Form" width="80%">
+</div>
+
+Fill out the form with employee details. Required fields are marked with an asterisk (*).
+
+### 5. Employee Profile View
+<div align="center">
+  <img src="project_images/image5.png" alt="Employee Profile" width="80%">
+</div>
+
+View detailed information about an employee including personal information, employment details, and salary information.
+
+### 6. User Profile Settings
+<div align="center">
+  <img src="project_images/image6.png" alt="User Profile Settings" width="80%">
+</div>
+
+Update your user profile, change password, and manage your account settings.
+
+### 7. HR Operations Dashboard
+<div align="center">
+  <img src="project_images/image7.png" alt="HR Operations" width="80%">
+</div>
+
+HR personnel can access additional features for managing employee status changes, salary adjustments, and employment type changes.
+
+### 8. System Reports
+<div align="center">
+  <img src="project_images/image8.png" alt="System Reports" width="80%">
+</div>
+
+Generate and export various reports including employee lists, status reports, and salary information.
+
+### 9. Admin Control Panel
+<div align="center">
+  <img src="project_images/image9.png" alt="Admin Control Panel" width="80%">
+</div>
+
+Administrators have access to system settings, user management, and activity logs for complete control over the application.
 
 ## 🛠️ Tech Stack
 
@@ -57,7 +121,7 @@ A modern web application built with FastAPI for managing employee information, u
 
 1. **Clone the repository:**
    ```bash
-    https://github.com/Posuza/FastJinja2-Employee_Management_System-.git
+   https://github.com/Posuza/FastJinja2-Employee_Management_System-.git
    cd employee-management-system
    ```
 
@@ -287,32 +351,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support, please open an issue in the GitHub repository or contact the development team.
-
-# Fast API Project
-
-## Overview
-This is a FastAPI application with custom error handling middleware.
-
-## Features
-- Custom 404 error handler
-- Custom 500 error handler
-- Template-based error responses
-
-## Project Structure
-```
-fast1/
-├── app/
-│   ├── middleware.py - Custom error handling middleware
-│   └── templates/
-│       └── error.html - Error template
-├── main.py - Application entry point
-└── README.md - This file
-```
-
-## Setup and Installation
-1. Clone the repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run the application: `uvicorn main:app --reload`
-
-## Development
-This project uses FastAPI framework with Jinja2 templates for rendering error pages.
