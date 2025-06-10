@@ -274,3 +274,32 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support, please open an issue in the GitHub repository or contact the development team.
+
+# Fast API Project
+
+## Overview
+This is a FastAPI application with custom error handling middleware.
+
+## Features
+- Custom 404 error handler
+- Custom 500 error handler
+- Template-based error responses
+
+## Project Structure
+```
+fast1/
+├── app/
+│   ├── middleware.py - Custom error handling middleware
+│   └── templates/
+│       └── error.html - Error template
+├── main.py - Application entry point
+└── README.md - This file
+```
+
+## Setup and Installation
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run the application: `uvicorn main:app --reload`
+
+## Development
+This project uses FastAPI framework with Jinja2 templates for rendering error pages.
