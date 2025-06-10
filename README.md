@@ -24,6 +24,19 @@ A modern web application built with FastAPI for managing employee information, u
   - Responsive design with Tailwind CSS
   - Interactive web interface
   - Mobile-friendly layout
+ 
+  ## 📸 Screenshots
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/login.png" alt="Login Screen" width="45%">
+  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/dashboard.png" alt="Dashboard" width="45%">
+</div>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/employee-list.png" alt="Employee List" width="45%">
+  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/employee-add.png" alt="Add Employee Form" width="45%">
+</div>
+
 
 ## 🛠️ Tech Stack
 
