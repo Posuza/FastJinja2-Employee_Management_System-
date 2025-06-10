@@ -28,12 +28,12 @@ A modern web application built with FastAPI for managing employee information, u
 ## 📸 Screenshots
 
 <div align="center">
-  <img src="project_images/image1.png" alt="Login Screen" width="45%">
-  <img src="project_images/image2.png" alt="Dashboard" width="45%">
+  <img src="project_images/image2.png" alt="Login Screen" width="45%">
+  <img src="project_images/image3.png" alt="Dashboard" width="45%">
 </div>
 
 <div align="center">
-  <img src="project_images/image3.png" alt="Employee List" width="45%">
+  <img src="project_images/image1.png" alt="Employee List" width="45%">
   <img src="project_images/image4.png" alt="Add Employee Form" width="45%">
 </div>
 
@@ -41,64 +41,57 @@ A modern web application built with FastAPI for managing employee information, u
 
 ### 1. Login Screen
 <div align="center">
-  <img src="project_images/image1.png" alt="Login Screen" width="80%">
+  <img src="project_images/image2.png" alt="Login Screen" width="80%">
 </div>
 
 Enter your username and password to access the system. If you don't have an account, click on the "Register" link to create one.
 
 ### 2. Dashboard Overview
 <div align="center">
-  <img src="project_images/image2.png" alt="Dashboard" width="80%">
+  <img src="project_images/image4.png" alt="Dashboard" width="80%">
 </div>
 
 The dashboard provides a quick overview of key metrics including total employees, departments, and recent activities.
 
-### 3. Employee Management
+### 3. Employee Management for user
 <div align="center">
-  <img src="project_images/image3.png" alt="Employee List" width="80%">
+  <img src="project_images/image10.png" alt="Employee List" width="80%">
 </div>
 
 View all employees in a sortable and searchable table. Use the action buttons to edit, view details, or delete employee records.
 
-### 4. Adding New Employees
+### 4. Employee Management for admin 
 <div align="center">
-  <img src="project_images/image4.png" alt="Add Employee Form" width="80%">
+  <img src="project_images/image5.png" alt="Add Employee Form" width="80%">
+</div>
+
+### 4. Adding New Employees for admin 
+<div align="center">
+  <img src="project_images/image6.png" alt="Add Employee Form" width="80%">
 </div>
 
 Fill out the form with employee details. Required fields are marked with an asterisk (*).
 
-### 5. Employee Profile View
+### 5. Edit Employee for admin
 <div align="center">
-  <img src="project_images/image5.png" alt="Employee Profile" width="80%">
+  <img src="project_images/image7.png" alt="Employee Profile" width="80%">
+</div>
+
+### 5. delete Employee for admin
+<div align="center">
+  <img src="project_images/image8.png" alt="Employee Profile" width="80%">
 </div>
 
 View detailed information about an employee including personal information, employment details, and salary information.
 
-### 6. User Profile Settings
+### 6. User Profile 
 <div align="center">
-  <img src="project_images/image6.png" alt="User Profile Settings" width="80%">
+  <img src="project_images/image9.png" alt="User Profile Settings" width="80%">
 </div>
 
 Update your user profile, change password, and manage your account settings.
 
-### 7. HR Operations Dashboard
-<div align="center">
-  <img src="project_images/image7.png" alt="HR Operations" width="80%">
-</div>
 
-HR personnel can access additional features for managing employee status changes, salary adjustments, and employment type changes.
-
-### 8. System Reports
-<div align="center">
-  <img src="project_images/image8.png" alt="System Reports" width="80%">
-</div>
-
-Generate and export various reports including employee lists, status reports, and salary information.
-
-### 9. Admin Control Panel
-<div align="center">
-  <img src="project_images/image9.png" alt="Admin Control Panel" width="80%">
-</div>
 
 Administrators have access to system settings, user management, and activity logs for complete control over the application.
 
