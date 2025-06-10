@@ -28,7 +28,7 @@ A modern web application built with FastAPI for managing employee information, u
   ## 📸 Screenshots
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/login.png" alt="Login Screen" width="45%">
+  <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/project_image/image1.png" alt="main Screen" width="45%">
   <img src="https://raw.githubusercontent.com/Posuza/FastJinja2-Employee_Management_System-/main/screenshots/dashboard.png" alt="Dashboard" width="45%">
 </div>
 
